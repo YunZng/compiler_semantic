@@ -1,0 +1,9 @@
+Yulun Zeng
+
+I followed the suggested approach. So the first thing that I implemented was the visit_basic_type function. It took me a while to realize we are suppose to mark the AST. I included a print statement in every function call to help me visualize when a node is visited. The task was not too difficult, there is a lot of information on the AST. So the only thing I needed to do was to create matching type. Since the BasicType only has two fields, I had to make sure long int and short int get translate to just long or short, ommitting the int keyword, and at the same time cannot allow int int. I think this part was interesting, I created a new type kind enum called NOTHING. And my approach was to create a few flags, one for signed/unsigned, one for const, one for volatile, one for type kind. Then I set flags as I gather information. After I get all information(qualifier, basic type, signess), I do a check to make sure they are valid types, then use the flags to create a type shared pointer. And annotate an appropriate node with the type pointer.
+
+The rest of the functions are similar to the visit_basic_type, except that sometimes it is necessary to store the variable/function/type name in the node too. This is for symbol table look up. For binary and unary operations, I made a variable called is_lvalue_bool for many type objects, and added a is_lvalue function to them. For basic type, I added a set_is_lvalue function. This was extremely useful for assignment operator. 
+
+I also made a function called is_convertible to check if the binary operation is allowed between two values. This is just some tedious type checking, involves recursive call if both types are array/pointer.
+
+I am not sure if I freed up memory correctly, as I code on mac, there's no valgrind. But I used leaks --atExit to check, it reported as no leak, the only thing I had to delete was the symbol table. 
